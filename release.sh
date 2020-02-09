@@ -5,13 +5,21 @@ reset
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 TARGET_BRANCH='develop'
 
+checkHasUnmmergedFiles() {
+    UNCOMMITED_CHANGES=$(git status -s | wc -l)
+
+    if [ "$UNCOMMITED_CHANGES" -gt 0 ]; then
+        echo "Working directory not clean. Aborting"
+        exit 1
+    fi
+}
+
 defineReleaseVersion() {
-    echo "defineReleaseVersion"
     echo "Insert the release version"
     read RELEASE_VERSION
     read -p "Are you sure you wish to continue the release $RELEASE_VERSION?" CONFIRM
     if [ "$CONFIRM" != "yes" ]; then
-       exit
+       exit 1
     fi
 }
 
@@ -49,14 +57,6 @@ checkMergeConflicts() {
     fi
 }
 
-checkHasUnmmergedFiles() {
-    UNCOMMITED_CHANGES=$(git status -s | wc -l)
-
-    if [ "$UNCOMMITED_CHANGES" -gt 0 ]; then
-        echo "Working directory not clean. Aborting"
-    fi
-}
-
 createTag() {
     # git tag -a v1.0.3 -m "My version 1.0.3"
     # echo "committing"
@@ -66,12 +66,15 @@ createTag() {
 }
 
 openMergeRequest() {
-    xdg-open "https://gitlab.superlogica.com/pjbank---mensageiro/mensageiro/merge_requests/new?utf8=%E2%9C%93
-    &merge_request%5Bsource_project_id%5D=19
-    &merge_request%5Bsource_branch%5D=$RELEASE_BRANCH
-    &merge_request%5Btarget_project_id%5D=19
-    &merge_request%5Btarget_branch%5D=$TARGET_BRANCH"
-    echo "openMergeRequest"
+    echo "Opening merge request for release $RELEASE_VERSION"
+    # xdg-open "https://gitlab.superlogica.com/pjbank---mensageiro/mensageiro/merge_requests/new?utf8=%E2%9C%93
+    # &merge_request%5Bsource_project_id%5D=19
+    # &merge_request%5Bsource_branch%5D=$RELEASE_BRANCH
+    # &merge_request%5Btarget_project_id%5D=19
+    # &merge_request%5Btarget_branch%5D=$TARGET_BRANCH"
+
+    xdg-open "https://github.com/marceloaas/teste/compare/$TARGET_BRANCH...$RELEASE_BRANCH"
+
 }
 
 packageVersion() {
@@ -99,18 +102,18 @@ packageVersion() {
 
 }
 
+
 echo "Current branch: $CURRENT_BRANCH"
-
 echo "Updating from origin...x"
-git fetch origin
+# git fetch origin
 
-checkHasUnmmergedFiles()
-defineReleaseVersion()
-initMasterBranch()
-initTargeBranch()
-createReleaseBranch()
-checkMergeConflicts()
-openMergeRequest()
+checkHasUnmmergedFiles
+defineReleaseVersion
+initMasterBranch
+initTargeBranch
+createReleaseBranch
+checkMergeConflicts
+openMergeRequest
 
 
 exit;
