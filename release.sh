@@ -78,7 +78,7 @@ openMergeRequest() {
     echo ""
     echo "Opening merge request for release $RELEASE_VERSION"
 
-    git branch -u origin/release/$RELEASE_VERSION
+    git push -u
 
     # xdg-open "https://gitlab.superlogica.com/pjbank---mensageiro/mensageiro/merge_requests/new?utf8=%E2%9C%93
     # &merge_request%5Bsource_project_id%5D=19
