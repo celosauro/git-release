@@ -1,6 +1,6 @@
 {
   "name": "release",
-  "version": "1.2.1",
+  "version": "1.0.0",
   "description": "- `develop` branches from `master` - `release/*` should branches from `develop` - `release/*` branch should merged in `master`, backwards `develop`",
   "main": "index.js",
   "scripts": {
