@@ -5,6 +5,16 @@ reset
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 TARGET_BRANCH='develop'
 
+defineReleaseVersion() {
+    echo "defineReleaseVersion"
+    echo "Insert the release version"
+    read RELEASE_VERSION
+    read -p "Are you sure you wish to continue the release $RELEASE_VERSION?" CONFIRM
+    if [ "$CONFIRM" != "yes" ]; then
+       exit
+    fi
+}
+
 initMasterBranch() {
     echo "Checkout to master branch"
     git checkout master
@@ -17,8 +27,16 @@ initTargeBranch() {
     git pull origin $TARGET_BRANCH
 }
 
-mergeMasterInTarget() {
-    echo "mergeMasterInTarget"
+createReleaseBranch() {
+    echo "Creating release branch"
+    git checkout $TARGET_BRANCH
+    git checkout -b release/$RELEASE_VERSION
+}
+
+mergeMasterInRelease() {
+    echo "Merging master into release"
+    git checkout release/$RELEASE_VERSION
+    git merge master --no-ff
 }
 
 checkMergeConflicts() {
@@ -32,15 +50,11 @@ checkMergeConflicts() {
 }
 
 checkHasUnmmergedFiles() {
-    # Check for uncommitted changes
     UNCOMMITED_CHANGES=$(git status -s | wc -l)
-    if [ "$UNCOMMITED_CHANGES" -gt 0 ]; then
-        echo "Working directory not clean. skipping..."
-    fi
-}
 
-createReleaseBranch() {
-    echo "release"
+    if [ "$UNCOMMITED_CHANGES" -gt 0 ]; then
+        echo "Working directory not clean. Aborting"
+    fi
 }
 
 createTag() {
@@ -52,38 +66,52 @@ createTag() {
 }
 
 openMergeRequest() {
-    # xdg-open "https://gitlab.superlogica.com/pjbank---mensageiro/mensageiro/merge_requests/new?utf8=%E2%9C%93
-    # &merge_request%5Bsource_project_id%5D=19
-    # &merge_request%5Bsource_branch%5D=$RELEASE_BRANCH
-    # &merge_request%5Btarget_project_id%5D=19
-    # &merge_request%5Btarget_branch%5D=$TARGET_BRANCH"
+    xdg-open "https://gitlab.superlogica.com/pjbank---mensageiro/mensageiro/merge_requests/new?utf8=%E2%9C%93
+    &merge_request%5Bsource_project_id%5D=19
+    &merge_request%5Bsource_branch%5D=$RELEASE_BRANCH
+    &merge_request%5Btarget_project_id%5D=19
+    &merge_request%5Btarget_branch%5D=$TARGET_BRANCH"
     echo "openMergeRequest"
 }
 
-# echo "Insert the release version"
-# read RELEASE_VERSION
-# read -p "Are you sure you wish to continue the release $RELEASE_VERSION?" CONFIRM
-# if [ "$CONFIRM" != "yes" ]; then
-#    exit
-# fi
-# echo "Current branch: $CURRENT_BRANCH"
-# echo "Updating from origin..."
-# git fetch origin
+packageVersion() {
 
-# $ CURRENT_VERSION=$(npm run version --silent)
+    PACKAGE_VERSION=$(cat package.json \
+    | grep version \
+    | head -1 \
+    | awk -F: '{ print $2 }' \
+    | sed 's/[",]//g' \
+    | tr -d '[[:space:]]')
 
-PACKAGE_VERSION=$(cat package.json \
-  | grep version \
-  | head -1 \
-  | awk -F: '{ print $2 }' \
-  | sed 's/[",]//g' \
-  | tr -d '[[:space:]]')
+    echo $PACKAGE_VERSION
 
-echo $PACKAGE_VERSION
+    # CURRENT_VERSION=$(node -p "require('./package.json').version")
 
-CURRENT_VERSION=$(node -p "require('./package.json').version")
+    echo $CURRENT_VERSION
 
-echo $CURRENT_VERSION
-#  && git tag $PACKAGE_VERSION && git push --tags
-# git branch -u origin/<branch-name>
+    PACKAGE=$(node -p "JSON.stringify({...require('./package.json'), 'version': 'value41'}, null, 4)")
+
+    echo $PACKAGE | python -m json.tool > package.json
+    # echo $PACKAGE > package.json
+    #  && git tag $PACKAGE_VERSION && git push --tags
+    # git branch -u origin/<branch-name>
+
+
+}
+
+echo "Current branch: $CURRENT_BRANCH"
+
+echo "Updating from origin...x"
+git fetch origin
+
+checkHasUnmmergedFiles()
+defineReleaseVersion()
+initMasterBranch()
+initTargeBranch()
+createReleaseBranch()
+checkMergeConflicts()
+openMergeRequest()
+
+
 exit;
+

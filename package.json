@@ -1,12 +1,12 @@
 {
-  "name": "release",
-  "version": "3.3.3",
-  "description": "- `develop` branches from `master` - `release/*` should branches from `develop` - `release/*` branch should merged in `master`, backwards `develop`",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "author": "",
+    "description": "- `develop` branches from `master` - `release/*` should branches from `develop` - `release/*` branch should merged in `master`, backwards `develop`",
+    "keywords": [],
+    "license": "ISC",
+    "main": "index.js",
+    "name": "release",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "version": "value41"
 }
