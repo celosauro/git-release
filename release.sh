@@ -65,14 +65,6 @@ checkMergeConflicts() {
     fi
 }
 
-createTag() {
-    echo ""
-    echo "Creating tag for new release"
-    git tag -a v$RELEASE_VERSION -m "Bump version $RELEASE_VERSION" -q
-    git push --tags -q
-    git push -q
-}
-
 openMergeRequest() {
     echo ""
     echo "Opening merge request for release $RELEASE_VERSION"
@@ -88,7 +80,16 @@ openMergeRequest() {
     xdg-open "https://github.com/marceloaas/teste/compare/$TARGET_BRANCH...release/$RELEASE_VERSION"
 }
 
-packageVersion() {
+updatePackageVersion() {
+    PACKAGE=$(node -p "JSON.stringify({...require('./package.json'), 'version': '$RELEASE_VERSION'}, null, 4)")
+    echo $PACKAGE | python -m json.tool > package.json
+}
+
+createTag() {
+    echo ""
+    echo "Creating tag for new release"
+
+    git checkout master
 
     PACKAGE_VERSION=$(cat package.json \
     | grep version \
@@ -98,26 +99,27 @@ packageVersion() {
     | tr -d '[[:space:]]')
     echo $PACKAGE_VERSION
 
-    PACKAGE=$(node -p "JSON.stringify({...require('./package.json'), 'version': 'value41'}, null, 4)")
-    echo $PACKAGE | python -m json.tool > package.json
-    # echo $PACKAGE > package.json
-    #  && git tag $PACKAGE_VERSION && git push --tags -q
+    git tag -a v$PACKAGE_VERSION -m "Bump version $PACKAGE_VERSION" -q
+    git push --tags -q
+    git push -q
 }
 
-echo ""
-echo "Current branch: $CURRENT_BRANCH"
-echo ""
-echo "Updating from origin...x"
-git fetch origin -q
 
-checkHasUnmmergedFiles
+# echo ""
+# echo "Current branch: $CURRENT_BRANCH"
+# echo ""
+# echo "Updating from origin...x"
+# git fetch origin -q
+
+# checkHasUnmmergedFiles
 defineReleaseVersion
-initMasterBranch
-initTargeBranch
-createReleaseBranch
-mergeMasterInRelease
-checkMergeConflicts
-openMergeRequest
+packageVersion
+# initMasterBranch
+# initTargeBranch
+# createReleaseBranch
+# mergeMasterInRelease
+# checkMergeConflicts
+# openMergeRequest
 
 
 exit;
