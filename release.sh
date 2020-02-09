@@ -20,8 +20,8 @@ defineReleaseVersion() {
     echo "Insert the release version"
     read RELEASE_VERSION
     echo ""
-    read -p "Are you sure you wish to continue the release $RELEASE_VERSION?" CONFIRM
-    if [ "$CONFIRM" != "yes" || "$CONFIRM" != "y" ]; then
+    read -p "Are you sure you wish to continue the release $RELEASE_VERSION? [y/n] " CONFIRM
+    if [ "$CONFIRM" != "y" ]; then
        exit 1
     fi
 }
