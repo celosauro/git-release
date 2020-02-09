@@ -67,11 +67,10 @@ checkMergeConflicts() {
 
 createTag() {
     echo ""
-    echo "createTag"
-    # git tag -a v1.0.3 -m "My version 1.0.3" -q
-    # echo "committing"
-    # git push --tags -q
-    # git push -q
+    echo "Creating tag for new release"
+    git tag -a v$RELEASE_VERSION -m "Bump version $RELEASE_VERSION" -q
+    git push --tags -q
+    git push -q
 }
 
 openMergeRequest() {
@@ -87,7 +86,6 @@ openMergeRequest() {
     # &merge_request%5Btarget_branch%5D=$TARGET_BRANCH"
 
     xdg-open "https://github.com/marceloaas/teste/compare/$TARGET_BRANCH...release/$RELEASE_VERSION"
-
 }
 
 packageVersion() {
