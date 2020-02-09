@@ -2,11 +2,11 @@
 
 reset
 
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) -q
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 TARGET_BRANCH='develop'
 
 checkHasUnmmergedFiles() {
-    UNCOMMITED_CHANGES=$(git status -s | wc -l) -q
+    UNCOMMITED_CHANGES=$(git status -s | wc -l)
 
     if [ "$UNCOMMITED_CHANGES" -gt 0 ]; then
         echo ""
@@ -55,7 +55,7 @@ mergeMasterInRelease() {
 }
 
 checkMergeConflicts() {
-    CONFLICTS=$(git ls-files -u | wc -l) -q
+    CONFLICTS=$(git ls-files -u | wc -l)
 
     if [ "$CONFLICTS" -gt 0 ] ; then
         echo ""
