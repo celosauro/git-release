@@ -2,11 +2,11 @@
 
 reset
 
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) -q
 TARGET_BRANCH='develop'
 
 checkHasUnmmergedFiles() {
-    UNCOMMITED_CHANGES=$(git status -s | wc -l)
+    UNCOMMITED_CHANGES=$(git status -s | wc -l) -q
 
     if [ "$UNCOMMITED_CHANGES" -gt 0 ]; then
         echo ""
@@ -29,38 +29,38 @@ defineReleaseVersion() {
 initMasterBranch() {
     echo ""
     echo "Checkout to master branch"
-    git checkout master
-    git pull origin master
+    git checkout master -q
+    git pull origin master -q
 }
 
 initTargeBranch() {
     echo ""
     echo "Checkout to target branch: $TARGET_BRANCH"
-    git checkout $TARGET_BRANCH
-    git pull origin $TARGET_BRANCH
+    git checkout $TARGET_BRANCH -q
+    git pull origin $TARGET_BRANCH -q
 }
 
 createReleaseBranch() {
     echo ""
     echo "Creating release branch"
-    git checkout $TARGET_BRANCH
-    git checkout -b release/$RELEASE_VERSION
+    git checkout $TARGET_BRANCH -q
+    git checkout -b release/$RELEASE_VERSION -q
 }
 
 mergeMasterInRelease() {
     echo ""
     echo "Merging master into release"
-    git checkout release/$RELEASE_VERSION
-    git merge master --no-ff
+    git checkout release/$RELEASE_VERSION -q
+    git merge master --no-ff -q
 }
 
 checkMergeConflicts() {
-    CONFLICTS=$(git ls-files -u | wc -l)
+    CONFLICTS=$(git ls-files -u | wc -l) -q
 
     if [ "$CONFLICTS" -gt 0 ] ; then
         echo ""
         echo "There is a merge conflict. Aborting"
-        git merge --abort
+        git merge --abort -q
         exit 1
     fi
 }
@@ -68,17 +68,17 @@ checkMergeConflicts() {
 createTag() {
     echo ""
     echo "createTag"
-    # git tag -a v1.0.3 -m "My version 1.0.3"
+    # git tag -a v1.0.3 -m "My version 1.0.3" -q
     # echo "committing"
-    # git push --tags
-    # git push
+    # git push --tags -q
+    # git push -q
 }
 
 openMergeRequest() {
     echo ""
     echo "Opening merge request for release $RELEASE_VERSION"
 
-    git push -u
+    git push -u -q
 
     # xdg-open "https://gitlab.superlogica.com/pjbank---mensageiro/mensageiro/merge_requests/new?utf8=%E2%9C%93
     # &merge_request%5Bsource_project_id%5D=19
@@ -103,14 +103,14 @@ packageVersion() {
     PACKAGE=$(node -p "JSON.stringify({...require('./package.json'), 'version': 'value41'}, null, 4)")
     echo $PACKAGE | python -m json.tool > package.json
     # echo $PACKAGE > package.json
-    #  && git tag $PACKAGE_VERSION && git push --tags
+    #  && git tag $PACKAGE_VERSION && git push --tags -q
 }
 
 echo ""
 echo "Current branch: $CURRENT_BRANCH"
 echo ""
 echo "Updating from origin...x"
-git fetch origin
+git fetch origin -q
 
 checkHasUnmmergedFiles
 defineReleaseVersion
