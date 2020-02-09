@@ -117,6 +117,7 @@ defineReleaseVersion
 initMasterBranch
 initTargeBranch
 createReleaseBranch
+mergeMasterInRelease
 checkMergeConflicts
 openMergeRequest
 
