@@ -1,12 +1,20 @@
 {
-    "author": "",
-    "description": "- `develop` branches from `master` - `release/*` should branches from `develop` - `release/*` branch should merged in `master`, backwards `develop`",
-    "keywords": [],
-    "license": "ISC",
-    "main": "index.js",
-    "name": "release",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "version": "value41"
+  "name": "release",
+  "version": "1.2.3",
+  "description": "- `develop` branches from `master` - `release/*` should branches from `develop` - `release/*` branch should merged in `master`, backwards `develop`",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marceloaas/teste.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marceloaas/teste/issues"
+  },
+  "homepage": "https://github.com/marceloaas/teste#readme"
 }

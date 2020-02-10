@@ -112,8 +112,8 @@ createTag() {
 # git fetch origin -q
 
 # checkHasUnmmergedFiles
-defineReleaseVersion
-packageVersion
+# defineReleaseVersion
+# packageVersion
 # initMasterBranch
 # initTargeBranch
 # createReleaseBranch
@@ -121,6 +121,11 @@ packageVersion
 # checkMergeConflicts
 # openMergeRequest
 
+node -p "
+const package = require('./package.json'); 
+package.version = '$PACKAGE_VERSION';
+fs.writeFileSync('./package.json', JSON.stringify(package, null, 4));
+"
 
 exit;
 
